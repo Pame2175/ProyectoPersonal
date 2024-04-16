@@ -1,4 +1,3 @@
-// models/Mascota.js
 const mongoose = require('mongoose');
 
 // Define el esquema para las vacunaciones de la mascota
@@ -53,8 +52,10 @@ const MascotaSchema = new mongoose.Schema({
     condicionesMedicas: {
         type: String,
     },
-    propietario: {
-        type: String,
+    // Agregar un campo para el ID del propietario
+    propietarioId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
 }, { timestamps: true });

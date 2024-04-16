@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 const SubMenu = ({children}) => {
     return (
         <div className="container">
-            <NavLink to="/movies/list" className="me-3 btn btn-outline-primary mb-2">Lista de peliculas</NavLink>
-            <NavLink to="/movies/add" className="btn btn-outline-warning mb-2">Agregar Peliculas</NavLink>
+            <NavLink to="/mascota/list" className="me-3 btn btn-outline-primary mb-2">Lista de peliculas</NavLink>
+            <NavLink to="/mascota/add" className="btn btn-outline-warning mb-2">Agregar Peliculas</NavLink>
             {children}
         </div>
     )

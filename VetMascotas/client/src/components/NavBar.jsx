@@ -25,9 +25,9 @@ const NavBar = () => {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-warning">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-info">
             <div className="container">
-                <Link className="navbar-brand" to="/">Peliculas</Link>
+                <Link className="navbar-brand" to="/mascota/infoVeterinaria">Mascotas</Link>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -35,10 +35,10 @@ const NavBar = () => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <NavLink to="/movies/list" className="nav-link">Lista de Peliculas</NavLink>
+                            <NavLink to="/mascota/list" className="nav-link ">Lista de Mascotas</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink to="/movies/add" className="nav-link">Añadir más peliculas</NavLink>
+                            <NavLink to="/mascota/add" className="nav-link">Agendar cita</NavLink>
                         </li>
                     </ul>
                 </div>

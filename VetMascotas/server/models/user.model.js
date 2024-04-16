@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const uniqueValidator = require("mongoose-unique-validator");
 const bcrypt = require('bcrypt');
 
-
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -25,6 +24,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Password is required"],
         minlength: [8, "Password must be 8 characters or longer"]
+    },
+    role: {
+        type: String,
+        default: "user", // Establece el rol predeterminado como "user"
+        required: true
     }
 }, { timestamps: true });
 
@@ -49,4 +53,4 @@ UserSchema.pre('save', function (next) {
 
 UserSchema.plugin(uniqueValidator, { message: "Email already in use" });
 
-module.exports.UserModel = mongoose.model('User', UserSchema)
+module.exports.UserModel = mongoose.model('User', UserSchema);

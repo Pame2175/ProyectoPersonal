@@ -1,42 +1,41 @@
 import React, { useContext } from 'react';
-import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import axios from "axios";
+import * as Yup from 'yup';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 import UserContext from '../context/UserContext';
 import Swal from 'sweetalert2';
-
+import logo from '../img/logo.png';
 const UserForm = ({ formType }) => {
-    const { setUser, user } = useContext(UserContext); 
-    const navigate = useNavigate();
+    const { setUser } = useContext(UserContext);
 
     const initialValues = {
         email: '',
         password: '',
-        firstName: user?.firstName || '', 
-        lastName: user?.lastName || '', 
+        firstName: '',
+        lastName: '',
         confirmPassword: '',
+        role: 'user',
     };
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
-            .email('Este correo no es válido')
-            .required('Esto es requerido'),
+            .email('Correo electrónico no válido')
+            .required('Ingrese su email'),
         password: Yup.string()
-            .min(8, 'Campo debe tener 8 caracteres')
-            .required('NO OLVIDAR!!!'),
+            .min(8, 'Debe tener al menos 8 caracteres')
+            .required('Ingrese su contraseña'),
         ...(formType === 'registro' && {
-            firstName: Yup.string().required('Nombre es requerido'),
-            lastName: Yup.string().required('Apellido es requerido'),
+            firstName: Yup.string().required('Ingresa su nombre'),
+            lastName: Yup.string().required('Ingresa su apellido'),
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
-                .required('Confirmar contraseña es requerido'),
+                .required('Vuelva a ingredar su contraseña'),
         }),
     });
 
     const handleSubmit = async (values, { setSubmitting, resetForm, setErrors }) => {
-        if (formType === "registro") {
+        if (formType === 'registro') {
             await registerUser(values, setErrors);
         } else {
             await loginUser(values, setErrors);
@@ -47,99 +46,133 @@ const UserForm = ({ formType }) => {
 
     const registerUser = async (values, setErrors) => {
         try {
-            await axios.post(
-                "http://localhost:8000/api/auth/register",
-                values,
-                { withCredentials: true }
-            );
+            await axios.post('http://localhost:8000/api/auth/register', values, {
+                withCredentials: true,
+            });
             Swal.fire({
                 icon: 'success',
-                title: 'Registrado exitosamente!',
-                text: '¡Ya puedes iniciar sesión!',
+                title: 'Registro exitoso',
+                text: 'Ahora puedes iniciar sesión.',
                 confirmButtonColor: '#007bff',
                 confirmButtonText: 'OK',
             }).then(() => {
-                resetForm();
+                window.location.href = '/login';
             });
         } catch (err) {
-            console.log("Error: ", err.response.data);
-            setErrors({ general: err.response.data.msg });
+            setErrors({ general: err.response.data.message });
         }
     };
 
     const loginUser = async (values, setErrors) => {
         try {
-            let res = await axios.post(
-                "http://localhost:8000/api/auth/login",
-                values,
-                { withCredentials: true }
-            );
+            const res = await axios.post('http://localhost:8000/api/auth/login', values, {
+                withCredentials: true,
+            });
             setUser(res.data.user);
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-            navigate("/movies/add"); 
+            localStorage.setItem('user', JSON.stringify(res.data.user));
+            window.location.href = '/mascota/add';
         } catch (err) {
-            console.log("Error: ", err.response);
-            setErrors({ general: err.response.data.msg });
+            if (err.response && err.response.status === 401) {
+                // Mensaje para que vuelva a intentarlo
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Inicio de sesión fallido',
+                    text: 'Los datos ingresados son incorrectos. Por favor, vuelve a intentarlo.',
+                    confirmButtonColor: '#007bff',
+                    confirmButtonText: 'OK',
+                });
+            } else {
+                setErrors({ general: err.response.data.message });
+            }
         }
     };
 
     return (
-        <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <Formik
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        {({ errors, isSubmitting }) => (
-                            <Form>
-                                <h2>{formType === 'login' ? 'Iniciar Sesión' : 'Registrarse'}</h2>
-                                {errors?.general && (
-                                    <div className="alert alert-danger" role="alert">
-                                        {errors.general}
-                                    </div>
-                                )}
-                                {formType === 'registro' && (
-                                    <>
-                                        <div className="mb-3">
-                                            <Field type="text" name="firstName" className="form-control" placeholder="Nombre" />
-                                            <ErrorMessage name="firstName" component="div" className="text-danger" />
+        <div className="container my-5">
+            <div className="row g-0">
+                <div className="col-lg-6 d-flex flex-column justify-content-center align-items-center text-center bg-info text-white p-4">
+                    <img src={logo} alt="Imagen de ejemplo" className="img-fluid mb-4" />
+                    <h3>VetMascotas</h3>
+                    <p>Una breve descripción de tu aplicación o empresa.</p>
+                </div>
+                <div className="col-lg-6">
+                    <div className="card shadow-lg p-4 h-100">
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validationSchema}
+                            onSubmit={handleSubmit}
+                        >
+                            {({ errors, isSubmitting }) => (
+                                <Form>
+                                    <h3 style={{ fontStyle: 'italic' }}>{formType === 'login' ? 'Iniciar Sesión' : 'Registrarse'}</h3>
+                                    {errors.general && (
+                                        <div className="alert alert-danger" role="alert">
+                                            {errors.general}
                                         </div>
-                                        <div className="mb-3">
-                                            <Field type="text" name="lastName" className="form-control" placeholder="Apellido" />
-                                            <ErrorMessage name="lastName" component="div" className="text-danger" />
-                                        </div>
-                                    </>
-                                )}
-                                <div className="mb-3">
-                                    <Field type="email" name="email" className="form-control" placeholder="Email" />
-                                    <ErrorMessage name="email" component="div" className="text-danger" />
-                                </div>
-                                <div className="mb-3">
-                                    <Field type="password" name="password" className="form-control" placeholder="Password" />
-                                    <ErrorMessage name="password" component="div" className="text-danger" />
-                                </div>
-                                {formType === 'registro' && (
+                                    )}
+                                    {formType === 'registro' && (
+                                        <>
+                                            <div className="mb-3">
+                                                <Field type="text" name="firstName" className="form-control" placeholder="Nombre" />
+                                                <ErrorMessage name="firstName" component="div" className="text-danger" />
+                                            </div>
+                                            <div className="mb-3">
+                                                <Field type="text" name="lastName" className="form-control" placeholder="Apellido" />
+                                                <ErrorMessage name="lastName" component="div" className="text-danger" />
+                                            </div>
+                                        </>
+                                    )}
                                     <div className="mb-3">
-                                        <Field type="password" name="confirmPassword" className="form-control" placeholder="Confirmar password" />
-                                        <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                                        <Field type="email" name="email" className="form-control" placeholder="Email" />
+                                        <ErrorMessage name="email" component="div" className="text-danger" />
                                     </div>
-                                )}
-                                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-                                    {formType === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
-                                </button>
-                            </Form>
-                        )}
-                    </Formik>
+                                    <div className="mb-3">
+                                        <Field type="password" name="password" className="form-control" placeholder="Password" />
+                                        <ErrorMessage name="password" component="div" className="text-danger" />
+                                    </div>
+                                    {formType === 'registro' && (
+                                        <div className="mb-3">
+                                            <Field
+                                                type="password"
+                                                name="confirmPassword"
+                                                className="form-control"
+                                                placeholder="Confirmar Password"
+                                            />
+                                            <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                                        </div>
+                                    )}
+                                    <div className="d-flex justify-content-start">
+                                        <button type="submit" className="btn btn-outline-primary" disabled={isSubmitting} style={{ marginLeft: '130px' }}>
+                                            {formType === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
+                                        </button>
+                                    </div>
+                                    {/* Botón adicional para redireccionar */}
+                                    {formType === 'login' && (
+                                        <div className="mt-3">
+                                            <a href="/register" className="btn btn-link">
+                                                Registrarse
+                                            </a>
+                                        </div>
+                                    )}
+                                    {formType === 'registro' && (
+                                        <div className="mt-3">
+                                            <a href="/login" className="btn btn-link">
+                                                Iniciar sesión
+                                            </a>
+                                        </div>
+                                    )}
+                                </Form>
+                            )}
+                        </Formik>
+                    </div>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 UserForm.propTypes = {
-    formType: PropTypes.string.isRequired
-}
+    formType: PropTypes.string.isRequired,
+};
 
 export default UserForm;
