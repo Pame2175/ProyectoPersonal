@@ -1,13 +1,14 @@
 const Cita = require('../models/Cita');
 const Mascota = require('../models/mascota.model');
 const Veterinario = require('../models/veterinario');
+const User = require('../models/user.model');
 const mongoose = require('mongoose');
 const crearCita = async (req, res) => {
     try {
-        const { mascotaId, veterinarioId, descripcion, horario, estado } = req.body;
+        const { mascotaId, veterinarioId, descripcion, horario, estado, propietarioId } = req.body;
 
         // Validación de datos de entrada
-        if (!mascotaId || !veterinarioId || !descripcion || !horario) {
+        if (!mascotaId || !veterinarioId || !descripcion || !horario || !propietarioId) {
             return res.status(400).json({ error: 'Los campos mascotaId, veterinarioId, descripcion, y horario son obligatorios.' });
         }
 
@@ -42,6 +43,7 @@ const crearCita = async (req, res) => {
             descripcion,
             horario,
             estado: estado || 'pendiente', // Establece estado predeterminado si no se proporciona
+            propietarioId,
         });
 
         // Guardar la nueva cita en la base de datos
@@ -69,19 +71,119 @@ const obtenerListaCitas = async (req, res) => {
     try {
         // Realizar una consulta para obtener todas las citas
         const citas = await Cita.find()
-            .populate('mascotaId', 'nombre') // Poblamos el campo mascotaId para obtener el nombre de la mascota
-            .populate('veterinarioId', 'nombre'); // Poblamos el campo veterinarioId para obtener el nombre del veterinario
-        
+            .populate({
+                path: 'mascotaId', // Poblamos la mascota asociada a la cita
+                select: 'nombre propietarioId', // Seleccionamos el campo `propietarioId` y `nombre` de la mascota
+                populate: {
+                    path: 'propietarioId', // Poblamos el propietario de la mascota
+                    model: 'User', // Modelo del propietario, cambia el nombre si es diferente
+                    select: 'firstName lastName'
+                }
+            })
+            .populate('veterinarioId', 'nombre');
         // Responder con la lista de citas obtenida
         res.status(200).json(citas);
     } catch (error) {
         console.error('Error al obtener la lista de citas:', error);
-        
+
         // Manejo de errores
         res.status(500).json({ error: 'Error interno del servidor al obtener la lista de citas.' });
     }
 };
+
+const editarCita = async (req, res) => {
+    try {
+        const { id } = req.params; // Obtener el ID de la cita desde la URL
+        const { estado } = req.body; // Obtener el nuevo estado del cuerpo de la solicitud
+
+        // Validación del estado
+        const estadosPermitidos = ['pendiente', 'en proceso', 'atendido'];
+        if (!estadosPermitidos.includes(estado)) {
+            return res.status(400).json({ error: `El estado debe ser uno de los siguientes: ${estadosPermitidos.join(', ')}.` });
+        }
+
+        // Buscar la cita por su ID
+        const cita = await Cita.findById(id);
+        if (!cita) {
+            return res.status(404).json({ error: 'Cita no encontrada' });
+        }
+
+        // Actualizar el estado de la cita
+        cita.estado = estado;
+
+        // Guardar los cambios en la base de datos
+        await cita.save();
+
+        // Responder con la cita actualizada
+        res.status(200).json(cita);
+    } catch (error) {
+        console.error('Error al editar la cita:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+};
+
+
+
+
+
+// Controlador para obtener una cita por ID
+const obtenerCitaPorId = async (req, res) => {
+    try {
+        const { id } = req.params; // Obtiene el ID de la cita de los parámetros de la solicitud
+
+        // Busca la cita por ID en la base de datos
+        const cita = await Cita.findById(id)
+            .populate({
+                path: 'mascotaId',
+                select: 'nombre propietarioId',
+                populate: {
+                    path: 'propietarioId',
+                    model: 'User',
+                    select: 'firstName lastName'
+                }
+            })
+            .populate('veterinarioId', 'nombre');
+
+        // Verifica si la cita existe
+        if (!cita) {
+            return res.status(404).json({ error: 'Cita no encontrada' });
+        }
+
+        // Envía la cita encontrada como respuesta
+        res.json(cita);
+    } catch (error) {
+        console.error('Error al obtener la cita por ID:', error);
+
+        // Manejo de errores
+        res.status(500).json({ error: 'Error interno del servidor al obtener la cita.' });
+    }
+};
+const eliminarCita = async (req, res) => {
+    try {
+        const { id } = req.params; // Obtener el ID de la cita desde la URL
+
+        // Buscar la cita por su ID y eliminarla
+        const citaEliminada = await Cita.findByIdAndDelete(id);
+
+        // Verificar si la cita fue encontrada y eliminada
+        if (!citaEliminada) {
+            return res.status(404).json({ error: 'Cita no encontrada' });
+        }
+
+        // Responder con la cita eliminada
+        res.status(200).json({ message: 'Cita eliminada correctamente', cita: citaEliminada });
+    } catch (error) {
+        console.error('Error al eliminar la cita:', error);
+        res.status(500).json({ error: 'Error interno del servidor al eliminar la cita.' });
+    }
+};
+
+
+
 module.exports = {
     crearCita,
     obtenerListaCitas,
+    editarCita,
+    obtenerCitaPorId,
+    eliminarCita,
 };

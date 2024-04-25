@@ -39,6 +39,8 @@ module.exports = {
                                     firstName: user.firstName,
                                     lastName: user.lastName,
                                     email: user.email,
+                                    role: user.role,
+                                    
                                 };
                                 console.log("userInfo: ", userInfo);
 
@@ -68,6 +70,13 @@ module.exports = {
         res.json({ user: userData });
     },
    
+    getAllUsers: (req, res) => {
+        UserModel.find({})
+            .then(users => {
+                res.status(200).json(users);
+            })
+            .catch(err => res.status(400).json({ error: err }));
+    },
 
     
     

@@ -47,8 +47,7 @@ const eliminarHorario = async (req, res) => {
     }
 };
 
-// Controlador para consultar los horarios disponibles de un veterinario
-// Controlador para obtener los horarios de un veterinario específico
+
 const obtenerHorarios = async (req, res) => {
     try {
         // Obtener el ID del veterinario de los parámetros de la URL
@@ -66,7 +65,7 @@ const obtenerHorarios = async (req, res) => {
         // Si se encontraron horarios, enviar solo el campo 'horarios' como respuesta
         return res.json(horario.horarios);
     } catch (error) {
-        // En caso de error, enviar un mensaje de error
+       
         console.error('Error al obtener horarios por veterinario:', error);
         return res.status(500).json({ mensaje: 'Error al obtener horarios. Intente nuevamente más tarde.' });
     }

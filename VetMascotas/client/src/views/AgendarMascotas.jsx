@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import UserContext from '../context/UserContext';
+import { useContext } from "react";
 
 const AgendarCita = () => {
+    const { user } = useContext(UserContext);
     const { id } = useParams();
     const navigate = useNavigate();
     const [mascota, setMascota] = useState(null);
@@ -13,6 +16,7 @@ const AgendarCita = () => {
         descripcion: '',
         horario: '',
         estado: 'pendiente',
+        propietarioId: user._id,
     });
     const [veterinarios, setVeterinarios] = useState([]);
     const [horariosDisponibles, setHorariosDisponibles] = useState([]);

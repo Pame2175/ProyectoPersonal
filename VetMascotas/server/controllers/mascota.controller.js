@@ -30,17 +30,26 @@ const obtenerMascota = async (req, res) => {
     try {
         // Consulta para obtener todas las mascotas, poblando los campos de tipo de animal, raza, y vacunaciones.
         const mascotas = await Mascota.find()
+       
+        
+            
             .populate('razaId', 'nombre') // Pobla el campo 'nombre' de la raza
-            .populate('tipoAnimalId', 'nombre') // Pobla el campo 'nombre' del tipo de animal
+            .populate('tipoAnimalId', 'nombre')
+           
+           // Pobla el campo 'propietarioId' con todos los datos del propietario
+
             .populate({
                 path: 'vacunaciones',
                 populate: {
                     path: 'vacunaId', // Pobla el campo 'vacunaId' dentro de 'vacunaciones'
                     select: 'nombre', // Obtén solo el nombre de la vacuna
                 }
-            });
+            })
+            ; 
 
-        // Envía la lista de todas las mascotas con sus relaciones como respuesta JSON
+            
+           
+        
         res.status(200).json(mascotas);
     } catch (error) {
         console.error("Error al obtener las mascotas:", error);

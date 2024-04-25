@@ -52,11 +52,14 @@ const MascotaSchema = new mongoose.Schema({
     condicionesMedicas: {
         type: String,
     },
-    // Agregar un campo para el ID del propietario
+    // Campo para el ID del propietario
     propietarioId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
+    },
+    imagen: {
+        type: String,
     },
 }, { timestamps: true });
 

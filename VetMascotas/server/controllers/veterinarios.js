@@ -1,4 +1,4 @@
-const Veterinario = require('../models/veterinario'); // Importa el modelo de Veterinario
+const Veterinario = require('../models/veterinario'); 
 
 // Función para obtener la lista de veterinarios
 const obtenerVeterinarios = async (req, res) => {
@@ -17,7 +17,6 @@ const obtenerVeterinarios = async (req, res) => {
     }
 };
 
-// Exportar el controlador para que pueda ser utilizado en las rutas
 module.exports = {
     obtenerVeterinarios,
 };

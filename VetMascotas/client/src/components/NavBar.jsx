@@ -38,7 +38,10 @@ const NavBar = () => {
                             <NavLink to="/mascota/list" className="nav-link ">Lista de Mascotas</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink to="/mascota/add" className="nav-link">Agendar cita</NavLink>
+                            <NavLink to="/mascota/add" className="nav-link">Agendar Ficha de Mascota</NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/mascota/citas" className="nav-link">Lista de Citas</NavLink>
                         </li>
                     </ul>
                 </div>

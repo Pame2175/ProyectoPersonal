@@ -15,6 +15,7 @@ const AddMascota = () => {
     const [vacunas, setVacunas] = useState([]);
     const [vacunasFiltradas, setVacunasFiltradas] = useState([]);
     const [razasFiltradas, setRazasFiltradas] = useState([]);
+    const [selectedColor, setSelectedColor] = useState("#000000");
 
     // Cargar datos de la base de datos
     useEffect(() => {
@@ -121,7 +122,10 @@ const AddMascota = () => {
     };
 
     return (
-        <div className="container d-flex justify-content-center align-items-center" style={{ height: "150vh" }}>
+        <div className="container d-flex justify-content-center align-items-center" style={{
+            height: "100vh",
+           
+        }}>
             <div className="card p-4" style={{ width: "80%", maxWidth: "600px" }}>
                 <h1 className="card-title text-center mb-4">Agregar Ficha Mascota</h1>
                 <Formik
@@ -147,147 +151,183 @@ const AddMascota = () => {
                                 />
                             </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="tipoAnimalId" className="form-label">Tipo de animal: *</label>
-                                <Field
-                                    as="select"
-                                    name="tipoAnimalId"
-                                    className="form-select"
-                                    id="tipoAnimalId"
-                                    onChange={(e) => {
-                                        const tipoAnimalId = e.target.value;
-                                        setFieldValue("tipoAnimalId", tipoAnimalId);
-                                        manejarCambioTipoAnimal(tipoAnimalId, setFieldValue);
-                                    }}
-                                >
-                                    <option value="">Seleccione un tipo de animal</option>
-                                    {tiposDeAnimales.map((tipo) => (
-                                        <option key={tipo._id} value={tipo._id}>
-                                            {tipo.nombre}
-                                        </option>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="tipoAnimalId"
-                                    component="div"
-                                    className="text-danger"
-                                />
+                            <div className="row">
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="tipoAnimalId" className="form-label">Tipo de animal: *</label>
+                                        <Field
+                                            as="select"
+                                            name="tipoAnimalId"
+                                            className="form-select"
+                                            id="tipoAnimalId"
+                                            onChange={(e) => {
+                                                const tipoAnimalId = e.target.value;
+                                                setFieldValue("tipoAnimalId", tipoAnimalId);
+                                                manejarCambioTipoAnimal(tipoAnimalId, setFieldValue);
+                                            }}
+                                        >
+                                            <option value="">Seleccione un tipo de animal</option>
+                                            {tiposDeAnimales.map((tipo) => (
+                                                <option key={tipo._id} value={tipo._id}>
+                                                    {tipo.nombre}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="tipoAnimalId"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="razaId" className="form-label">Raza: *</label>
+                                        <Field
+                                            as="select"
+                                            name="razaId"
+                                            className="form-select"
+                                            id="razaId"
+                                        >
+                                            <option value="">Seleccione una raza</option>
+                                            {razasFiltradas.map((raza) => (
+                                                <option key={raza._id} value={raza._id}>
+                                                    {raza.nombre}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="razaId"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="edad" className="form-label">Edad: </label>
+                                        <Field
+                                            type="number"
+                                            name="edad"
+                                            className="form-control"
+                                            id="edad"
+                                        />
+                                        <ErrorMessage
+                                            name="edad"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="razaId" className="form-label">Raza: *</label>
-                                <Field
-                                    as="select"
-                                    name="razaId"
-                                    className="form-select"
-                                    id="razaId"
-                                >
-                                    <option value="">Seleccione una raza</option>
-                                    {razasFiltradas.map((raza) => (
-                                        <option key={raza._id} value={raza._id}>
-                                            {raza.nombre}
-                                        </option>
-                                    ))}
-                                </Field>
-                                <ErrorMessage
-                                    name="razaId"
-                                    component="div"
-                                    className="text-danger"
-                                />
+                            <div className="row">
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="fechaNacimiento" className="form-label">Fecha de nacimiento: </label>
+                                        <Field
+                                            type="date"
+                                            name="fechaNacimiento"
+                                            className="form-control"
+                                            id="fechaNacimiento"
+                                        />
+                                        <ErrorMessage
+                                            name="fechaNacimiento"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="genero" className="form-label">Género:</label>
+                                        <Field
+                                            as="select"
+                                            name="genero"
+                                            className="form-select"
+                                            id="genero"
+                                        >
+                                            <option value="">Seleccione un género</option>
+                                            <option value="Macho">Macho</option>
+                                            <option value="Hembra">Hembra</option>
+                                        </Field>
+                                        <ErrorMessage
+                                            name="genero"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="color" className="form-label">Color:</label>
+                                        <Field
+                                            type="color"
+                                            id="color"
+                                            name="color"
+                                            value={values.color}
+                                            onChange={(e) => setFieldValue("color", e.target.value)}
+                                            className="form-control form-control-color"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="edad" className="form-label">Edad: *</label>
-                                <Field
-                                    type="number"
-                                    name="edad"
-                                    className="form-control"
-                                    id="edad"
-                                />
-                                <ErrorMessage
-                                    name="edad"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
+                            <div className="row">
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="tamaño" className="form-label">Tamaño:</label>
+                                        <Field
+                                            type="text"
+                                            name="tamaño"
+                                            className="form-control"
+                                            id="tamaño"
+                                        />
+                                        <ErrorMessage
+                                            name="tamaño"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="fechaNacimiento" className="form-label">Fecha de nacimiento: *</label>
-                                <Field
-                                    type="date"
-                                    name="fechaNacimiento"
-                                    className="form-control"
-                                    id="fechaNacimiento"
-                                />
-                                <ErrorMessage
-                                    name="fechaNacimiento"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="microchip" className="form-label">Microchip:</label>
+                                        <Field
+                                            type="text"
+                                            name="microchip"
+                                            className="form-control"
+                                            id="microchip"
+                                        />
+                                        <ErrorMessage
+                                            name="microchip"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
 
-                            <div className="mb-3">
-                                <label htmlFor="genero" className="form-label">Género:</label>
-                                <Field
-                                    as="select"
-                                    name="genero"
-                                    className="form-select"
-                                    id="genero"
-                                >
-                                    <option value="">Seleccione un género</option>
-                                    <option value="Macho">Macho</option>
-                                    <option value="Hembra">Hembra</option>
-                                </Field>
-                                <ErrorMessage
-                                    name="genero"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="color" className="form-label">Color:</label>
-                                <Field
-                                    type="text"
-                                    name="color"
-                                    className="form-control"
-                                    id="color"
-                                />
-                                <ErrorMessage
-                                    name="color"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="tamaño" className="form-label">Tamaño:</label>
-                                <Field
-                                    type="text"
-                                    name="tamaño"
-                                    className="form-control"
-                                    id="tamaño"
-                                />
-                                <ErrorMessage
-                                    name="tamaño"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="microchip" className="form-label">Microchip:</label>
-                                <Field
-                                    type="text"
-                                    name="microchip"
-                                    className="form-control"
-                                    id="microchip"
-                                />
-                                <ErrorMessage
-                                    name="microchip"
-                                    component="div"
-                                    className="text-danger"
-                                />
+                                <div className="col-sm-4">
+                                    <div className="mb-3">
+                                        <label htmlFor="condicionesMedicas" className="form-label">Condiciones médicas:</label>
+                                        <Field
+                                            type="text"
+                                            name="condicionesMedicas"
+                                            className="form-control"
+                                            id="condicionesMedicas"
+                                        />
+                                        <ErrorMessage
+                                            name="condicionesMedicas"
+                                            component="div"
+                                            className="text-danger"
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Vacunaciones */}
@@ -300,7 +340,6 @@ const AddMascota = () => {
                                                 as="select"
                                                 name={`vacunaciones[${index}].vacunaId`}
                                                 className="form-select"
-                                                // Disable options that have already been selected in other fields
                                             >
                                                 <option value="">Seleccione una vacuna</option>
                                                 {vacunasFiltradas.map((vacuna) => {
@@ -309,7 +348,7 @@ const AddMascota = () => {
 
                                                     // Verifica si la vacuna está en la lista de seleccionadas
                                                     const isDisabled = vacunasSeleccionadas.includes(vacuna._id);
-                                                    
+
                                                     return (
                                                         <option
                                                             key={vacuna._id}
@@ -359,29 +398,13 @@ const AddMascota = () => {
 
                             {/* Campos adicionales del formulario */}
                             <div className="mb-3">
-                                <label htmlFor="condicionesMedicas" className="form-label">Condiciones médicas:</label>
-                                <Field
-                                    type="text"
-                                    name="condicionesMedicas"
-                                    className="form-control"
-                                    id="condicionesMedicas"
-                                />
-                                <ErrorMessage
-                                    name="condicionesMedicas"
-                                    component="div"
-                                    className="text-danger"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="condicionesMedicas" className="form-label">Propiestario:</label>
+                                <label htmlFor="condicionesMedicas" className="form-label">Propietario:</label>
                                 <Field
                                     value={user.firstName}
                                     type="text"
                                     name="nombre_propietario"
                                     className="form-control"
-                                   
                                 />
-                               
                             </div>
 
                             {/* Botón de envío */}

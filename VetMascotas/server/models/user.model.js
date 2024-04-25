@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require("mongoose-unique-validator");
 const bcrypt = require('bcrypt');
-
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -27,10 +26,20 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: "user", // Establece el rol predeterminado como "user"
+        default: "user",
         required: true
+    },
+    address: {
+        type: String,
+        required: [true, "Address is required"]
+    },
+    phone: {
+        type: String,
+        required: [true, "Phone number is required"],
+        
     }
 }, { timestamps: true });
+
 
 UserSchema.virtual('confirmPassword')
     .get(() => this._confirmPassword)

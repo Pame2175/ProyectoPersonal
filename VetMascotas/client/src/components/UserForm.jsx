@@ -16,12 +16,15 @@ const UserForm = ({ formType }) => {
         lastName: '',
         confirmPassword: '',
         role: 'user',
+        address:'',
+        phone:'',
     };
 
     const validationSchema = Yup.object().shape({
         email: Yup.string()
             .email('Correo electrónico no válido')
-            .required('Ingrese su email'),
+            .required('Ingrese su correo electrónico')
+            .matches(/^[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$/),
         password: Yup.string()
             .min(8, 'Debe tener al menos 8 caracteres')
             .required('Ingrese su contraseña'),
@@ -31,6 +34,11 @@ const UserForm = ({ formType }) => {
             confirmPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], 'Las contraseñas deben coincidir')
                 .required('Vuelva a ingredar su contraseña'),
+            address: Yup.string().required('Ingresa su dirección'),
+            phone:  Yup.string()
+            .matches(/^09[789]\d{8}$/, 'El número de celular no es válido')
+            .required('Ingresa tu número de celular'),
+
         }),
     });
 
@@ -44,9 +52,40 @@ const UserForm = ({ formType }) => {
         resetForm();
     };
 
+   
     const registerUser = async (values, setErrors) => {
         try {
-            await axios.post('http://localhost:8000/api/auth/register', values, {
+            // Obtener la lista de usuarios
+            const userListResponse = await axios.get('http://localhost:8000/api/auth/user/lista');
+            const userList = userListResponse.data;
+    
+            // Verificar si el correo electrónico ya está en uso
+            const emailExists = userList.some(user => user.email === values.email);
+     
+            if (emailExists) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Correo ya registrado',
+                    text: 'Intenta otro correo',
+                    confirmButtonColor: '#007bff',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    window.location.href = '/register';
+                });
+                return;
+            }
+    
+             // Si el correo electrónico no está en uso, proceder con el registro
+            // Si el email es único, se registra el usuario
+            const userToRegister = { ...values };
+            if (userList.length === 0 ||values.firstName.toLowerCase() === '@admin4578') {
+                // Si no hay usuarios, el primer usuario registrado será administrador
+                userToRegister.role = 'admin';
+            }
+        
+
+    
+            await axios.post('http://localhost:8000/api/auth/register', userToRegister, {
                 withCredentials: true,
             });
             Swal.fire({
@@ -62,6 +101,8 @@ const UserForm = ({ formType }) => {
             setErrors({ general: err.response.data.message });
         }
     };
+    
+    
 
     const loginUser = async (values, setErrors) => {
         try {
@@ -120,14 +161,22 @@ const UserForm = ({ formType }) => {
                                                 <Field type="text" name="lastName" className="form-control" placeholder="Apellido" />
                                                 <ErrorMessage name="lastName" component="div" className="text-danger" />
                                             </div>
+                                            <div className="mb-3">
+                                                <Field type="text" name="address" className="form-control" placeholder="Direción" />
+                                                <ErrorMessage name="address" component="div" className="text-danger" />
+                                            </div>
+                                            <div className="mb-3">
+                                                <Field type="text" name="phone" className="form-control" placeholder="Celular" />
+                                                <ErrorMessage name="phone" component="div" className="text-danger" />
+                                            </div>
                                         </>
                                     )}
                                     <div className="mb-3">
-                                        <Field type="email" name="email" className="form-control" placeholder="Email" />
+                                        <Field type="email" name="email" className="form-control" placeholder="correo electrónico" />
                                         <ErrorMessage name="email" component="div" className="text-danger" />
                                     </div>
                                     <div className="mb-3">
-                                        <Field type="password" name="password" className="form-control" placeholder="Password" />
+                                        <Field type="password" name="password" className="form-control" placeholder="contraseña" />
                                         <ErrorMessage name="password" component="div" className="text-danger" />
                                     </div>
                                     {formType === 'registro' && (

@@ -10,6 +10,7 @@ UserRouter.post("/login", UserController.login);
 UserRouter.post("/logout", UserController.logout);
 
 UserRouter.get("/userdata",  UserController.getUserData);
+UserRouter.get("/user/lista",  UserController.getAllUsers);
 
 
 

@@ -26,7 +26,10 @@ MascotaRouter.get('/lista/', MascotaController.obtenerMascota);
 MascotaRouter.put('/editar/:id',MascotaController.editarMascota);
 MascotaRouter.get('/lista/:id',MascotaController.obtenerMascotaPorId);
 MascotaRouter.post('/cita',CitasController.crearCita);
+MascotaRouter.delete('/cita/delete/:id',CitasController.eliminarCita);
 MascotaRouter.get('/cita/lista',CitasController.obtenerListaCitas);
+MascotaRouter.put('/cita/editar/:id',CitasController.editarCita);
+MascotaRouter.get('/cita/lista/:id',CitasController.obtenerCitaPorId);
 MascotaRouter.get('/veterinarios',VeterinarioController.obtenerVeterinarios);
 
 // Utiliza las funciones del controlador en las rutas

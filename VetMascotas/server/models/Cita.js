@@ -28,6 +28,11 @@ const citaSchema = new mongoose.Schema({
         enum: ['pendiente', 'en proceso', 'atendido'],
         default: 'pendiente',
     },
+    propietarioId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Mascota', // Referencia al modelo de Mascota
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

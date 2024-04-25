@@ -1,0 +1,14 @@
+El sistema VetMascotas es una aplicación diseñada para gestionar información de mascotas y dueños de mascotas de manera eficiente. 
+Las características principales del sistema son:
+
+Agregar ficha de mascotas Permite registrar una nueva mascota en el sistema con detalles como nombre, tipo de animal, raza, género, propietario, 
+color, tamaño, cédula, vacunaciones y alergias.
+
+Lista de mascotas Muestra una lista de todas las mascotas registradas en el sistema. Cada ficha incluye botones para editar los detalles de la 
+mascota, visualizar la ficha en formato PDF, eliminar la ficha y agregar una cita para la mascota.
+
+Gestión de citas Permite programar citas para las mascotas. Al agregar una cita, se mostrarán los datos tanto del dueño como de la mascota. 
+Además, se incluyen campos adicionales para registrar la descripción de la cita, la hora programada y el nombre del veterinario encargado.
+
+El sistema está diseñado para ofrecer una gestión integral de las mascotas y sus dueños, facilitando el seguimiento de la información y 
+proporcionando funcionalidades útiles para el cuidado y la salud de las mascotas.
